@@ -1,0 +1,6 @@
+Outcome,N,Outcome prevalence,Risk difference,Anchor AUROC
+High Alzheimer disease neuropathologic change,711,0.409,0.086,0.615
+High Braak stage,851,0.461,0.075,0.598
+Moderate/frequent neuritic plaques,851,0.592,0.052,0.568
+Lewy body pathology present,851,0.337,0.032,0.545
+Neuropathologic infarct present,711,0.174,-0.006,0.492

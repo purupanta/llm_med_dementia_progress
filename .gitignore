@@ -1,0 +1,30 @@
+# virtualenv files/folders created at project root
+/bin/
+/share/
+/pyvenv.cfg
+/CACHEDIR.TAG
+
+# If these exist, also ignore them
+/lib/
+/include/
+/Scripts/
+/Lib/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs/temp files
+*.log
+*.tmp

@@ -1,0 +1,1 @@
+Figure. Medication-state abstraction coverage across workflow units. Bars are shown on the count scale, with one bar per workflow comparison where possible. The visit-level analytic cohort is represented by two bars because medication availability and eligible-visit certification are separate comparisons. Legend headers identify the denominator for each set of colored components.

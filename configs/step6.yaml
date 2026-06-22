@@ -1,0 +1,26 @@
+# Project: dementia_progression
+# File: configs/step6.yaml
+#
+# Synopsis:
+#   Step 6 neuropathology-anchor analysis settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+# Step 6 currently uses neuropathology_columns defined in step1.yaml because those
+# columns must be retained from the source file before Step 6 runs. Future Step 6-specific
+# thresholds or anchor settings should be placed here.

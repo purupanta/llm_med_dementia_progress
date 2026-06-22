@@ -1,0 +1,5 @@
+model_family,predictor_set,legend_label,auroc,average_precision,brier_score,balanced_accuracy
+Logistic regression,Clinical-only,Clinical only,0.75,0.386,0.203,0.684
+Logistic regression,Clinical + LLM-enhanced medication-state,Clinical + LLM-enhanced medication-state information,0.772,0.42,0.196,0.711
+Histogram-based gradient boosting,Clinical-only,Clinical only,0.776,0.429,0.19,0.703
+Histogram-based gradient boosting,Clinical + LLM-enhanced medication-state,Clinical + LLM-enhanced medication-state information,0.791,0.456,0.184,0.718

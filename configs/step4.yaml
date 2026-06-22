@@ -1,0 +1,46 @@
+# Project: dementia_progression
+# File: configs/step4.yaml
+#
+# Synopsis:
+#   Step 4 held-out performance, bootstrap confidence intervals, calibration, decision-curve, and temporal validation settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+validation:
+  n_bootstrap: 200
+  calibration_bins: 10
+  decision_curve_thresholds:
+  - 0.05
+  - 0.1
+  - 0.15
+  - 0.2
+  - 0.25
+  - 0.3
+  - 0.35
+  - 0.4
+  - 0.45
+  - 0.5
+  calibration:
+    enabled: true
+    calibration_fraction: 0.2
+  temporal_validation:
+    enabled: true
+    year_col: VISITYR
+    test_min_year: 2019
+    min_train_events: 100
+    min_test_events: 50

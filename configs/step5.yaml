@@ -1,0 +1,33 @@
+# Project: dementia_progression
+# File: configs/step5.yaml
+#
+# Synopsis:
+#   Step 5 risk-prediction, subgroup, permutation-importance, and reclassification output settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+validation:
+  subgroup_min_n: 100
+  permutation_importance:
+    enabled: true
+    max_test_rows: 400
+    n_repeats: 1
+  grouped_permutation_importance:
+    enabled: true
+    max_test_rows: 600
+    n_repeats: 2

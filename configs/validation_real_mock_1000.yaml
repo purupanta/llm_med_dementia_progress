@@ -1,0 +1,87 @@
+# Project: dementia_progression
+# File: configs/validation_real_mock_1000.yaml
+#
+# Synopsis:
+#   Lightweight real-input validation profile. It runs the complete 7-step
+#   pipeline on the first 1,000 raw records with mock/local medication-state
+#   abstraction and neural text representations disabled. This profile is for
+#   software/output-integrity validation only and must not be used for manuscript
+#   LLM or neural performance claims.
+#
+# Author: puru panta (purupanta@uky.edu)
+# Date Created: 2026-05-27
+# Version: 2.14
+
+_base:
+- ./_base.yaml
+project_name: dementia_progression_validation_real_mock_1000
+input_csv: ./ip/data_nacc65/investigator_nacc65 w last visit.csv
+output_dir: ./op/validation_real_mock_1000_v2_14
+runtime:
+  input_record_selection:
+    min_row_index: 0
+    max_row_index: 1000
+  resume:
+    enabled: false
+    output_dir: ''
+    use_latest_matching_output_dir: false
+    allow_overwrite_existing_outputs: true
+progress:
+  enabled: false
+  show_step_messages: false
+output_options:
+  append_datetime_to_output_dir: false
+  write_analysis_dataset: true
+  save_model_bundle: true
+  decimal_places: 6
+validation:
+  n_bootstrap: 10
+  calibration_bins: 5
+  permutation_importance:
+    enabled: false
+  grouped_permutation_importance:
+    enabled: false
+modeling:
+  enabled_model_families:
+    - logistic
+  hyperparameter_tuning:
+    enabled: true
+    logistic_C_grid: [0.5]
+    hist_gradient_boosting_grid:
+      - max_iter: 80
+        learning_rate: 0.04
+        max_leaf_nodes: 15
+        l2_regularization: 0.05
+        min_samples_leaf: 20
+  hist_gradient_boosting:
+    max_iter: 80
+    learning_rate: 0.04
+neural_text_representations:
+  enabled: false
+llm_medication_state:
+  model_profile: custom
+  provider: mock
+  fallback_provider: local_clinical_abstraction
+  abstraction_unit: drug_token
+  llm_input_canonicalization_enabled: true
+  llm_input_alias_normalization_enabled: true
+  llm_input_pretrained_normalization_enabled: false
+  llm_input_pretrained_normalization_required: false
+  persistent_cache_enabled: false
+  model_comparison_enabled: false
+  require_ollama_when_enabled: false
+  require_min_ollama_successes: 0
+  llm_certification_require_ollama_provider: false
+  drug_dictionary_enforce_stable_key_mapping: true
+step1:
+  official_nacc_dictionary_autodownload:
+    enabled: false
+official_nacc_missing_codes:
+  autodownload:
+    enabled: false
+
+
+# Mock/local validation is a software check, not a manuscript LLM-output certification run.
+manuscript_readiness_gate:
+  enabled: false
+  fail_pipeline_on_error: false

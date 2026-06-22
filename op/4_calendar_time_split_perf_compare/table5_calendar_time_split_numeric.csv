@@ -1,0 +1,4 @@
+Temporal split,Calendar period,Visits,% of visits,Events,% of events
+Temporal training set,2005–2018,19352,81.8,3672,83.6
+Temporal test set,2019–2023,4313,18.2,718,16.4
+All,2005–2023,23665,100.0,4390,100.0

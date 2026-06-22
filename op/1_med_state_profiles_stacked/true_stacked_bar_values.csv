@@ -1,0 +1,11 @@
+Workflow group,Stacked bar,Segment,Count,Denominator,Segment class,Percent
+Drug-token workflow,Ollama-served token abstraction,Successful Ollama-served LLM outputs,1506,1506,Complete/present/certified,100.0
+Drug-token workflow,Ollama-served token abstraction,Non-successful token outputs,0,1506,Empty/non-certified/non-successful,0.0
+Profile-level abstraction,Unique profile certification,Certified unique medication profiles,18154,20186,Complete/present/certified,89.93361735856534
+Profile-level abstraction,Unique profile certification,Non-certified unique medication profiles,2032,20186,Empty/non-certified/non-successful,10.066382641434659
+Visit-level analytic cohort,Medication availability among eligible visits,Medication-present visits,22751,23665,Complete/present/certified,96.13775618001267
+Visit-level analytic cohort,Medication availability among eligible visits,Empty or noninformative medication visits,914,23665,Empty/non-certified/non-successful,3.8622438199873232
+Visit-level analytic cohort,Certification among eligible visits,Structurally certified visits,20644,23665,Complete/present/certified,87.23431227551237
+Visit-level analytic cohort,Certification among eligible visits,Non-certified visits,3021,23665,Empty/non-certified/non-successful,12.76568772448764
+Medication-present visit subset,Certification among medication-present visits,Certified medication-present visits,20644,22751,Complete/present/certified,90.73886862115951
+Medication-present visit subset,Certification among medication-present visits,Non-certified medication-present visits,2107,22751,Empty/non-certified/non-successful,9.26113137884049

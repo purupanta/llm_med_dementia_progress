@@ -1,0 +1,30 @@
+# Project: dementia_progression
+# File: configs/step7.yaml
+#
+# Synopsis:
+#   Step 7 reporting, output formatting, final-file, and model-bundle settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+output_options:
+  append_datetime_to_output_dir: true
+  output_datetime_format: '%Y%m%d_%H%M%S'
+  output_datetime_separator: _
+  write_analysis_dataset: true
+  save_model_bundle: true
+  decimal_places: 6

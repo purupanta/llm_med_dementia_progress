@@ -1,0 +1,280 @@
+# Project: dementia_progression
+# File: configs/_base_llm_medication_state.yaml
+#
+# Synopsis:
+#   Separate LLM medication-state abstraction configuration controlling provider, model,
+#   speed settings, persistent cache, fallback behavior, and output names.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-19
+#
+# Last Updated:
+#   2026-05-27
+#
+# Version:
+#   2.13
+#
+# Purpose:
+#   Supports the dementia_progression pipeline for medication-state-aware and LLM-
+#   enhanced machine learning prediction of next-visit dementia progression among mild
+#   cognitive impairment visits.
+#
+# Notes:
+#   This project uses participant-level train-validation-test splitting to prevent
+#   participant-level leakage. Neuropathology variables are excluded from model training
+#   and used only for secondary biological plausibility anchoring. Medication-state and
+#   LLM-derived features are interpreted as predictive patient-state representations,
+#   not as causal medication effects.
+
+# Optional LLM-enhanced medication-state abstraction.
+# Scientific role:
+#   The LLM is used only to derive clinically interpretable medication-state features.
+#   It is not used to directly predict dementia progression and should not be interpreted
+#   as estimating causal medication effects.
+#
+# Runtime role:
+#   provider: auto tries local Ollama when reachable. If Ollama is not reachable and
+#   fail_on_error is false, the pipeline uses a transparent local clinical abstraction
+#   so the full pipeline can still complete. Manuscript language should describe the
+#   features as true LLM-derived features only when step2d_* reports effective_provider=ollama.
+#
+# No-training accuracy profile:
+#   The default now sends all valid nonduplicate canonical medication strings to
+#   Ollama rather than only the most frequent subset. Medication strings are cleaned,
+#   alias-normalized, optionally normalized with frozen pretrained biomedical encoders
+#   such as SapBERT/BioClinicalBERT when installed, sorted/deduplicated, abstracted
+#   by a stronger local LLM profile, and accepted only if they pass strict certification.
+#   This design does not require supervised training or fine-tuning. It can be slower
+#   than the previous fast profile.
+llm_medication_state:
+  enabled: true
+  provider: "auto"              # auto | ollama | mock | local_clinical_abstraction | off
+  # Default uses a project-isolated Ollama port to avoid competing with another pipeline on 11434.
+  # The launcher can override this through OLLAMA_BASE_URL or DEMENTIA_OLLAMA_MODE=shared.
+  ollama_base_url: "http://127.0.0.1:11435"
+  ollama_model: "qwen2.5:7b-instruct"
+  fallback_provider: "local_clinical_abstraction"
+
+  # Model profile controls. The no-training accuracy profile uses a stronger
+  # local LLM than the previous 3B fast profile and processes all valid unique
+  # canonical medication strings by default. Pull the model with Ollama before
+  # running, or let the launcher fail over to installed candidates.
+  model_profile: "accuracy_fast_qwen7b"
+  model_profiles:
+    fast_qwen3b:
+      ollama_model: "qwen2.5:3b-instruct"
+      num_predict: 192
+      num_ctx: 1024
+      max_prompt_chars: 800
+      max_concurrent_requests: 4
+      max_unique_texts: 512
+      selection_strategy: "most_frequent"
+    pretrained_no_training_accuracy_qwen7b:
+      ollama_model: "qwen2.5:7b-instruct"
+      num_predict: 256
+      num_ctx: 2048
+      max_prompt_chars: 800
+      max_concurrent_requests: 4
+      max_unique_texts: null
+      selection_strategy: "most_frequent"
+      strict_response_validation_enabled: true
+      strict_cache_validation_enabled: true
+      llm_input_pretrained_normalization_enabled: true
+      llm_input_pretrained_normalization_backend: "sapbert_bioclinicalbert_ensemble"
+      llm_input_pretrained_normalization_required: true
+    no_training_accuracy_qwen7b:
+      ollama_model: "qwen2.5:7b-instruct"
+      num_predict: 256
+      num_ctx: 2048
+      max_prompt_chars: 800
+      max_concurrent_requests: 4
+      max_unique_texts: null
+      selection_strategy: "most_frequent"
+      strict_response_validation_enabled: true
+      strict_cache_validation_enabled: true
+    accuracy_fast_qwen7b:
+      # v2.13 accuracy-neutral speed profile: same 7B model, same full raw-drug
+      # dictionary, same strict validation; faster through concurrent requests and
+      # less frequent cache/partial-output I/O. If GPU memory is constrained, set
+      # LLM_MAX_CONCURRENT_REQUESTS=1 or 2 at runtime.
+      ollama_model: "qwen2.5:7b-instruct"
+      num_predict: 256
+      num_ctx: 2048
+      max_prompt_chars: 800
+      max_concurrent_requests: 4
+      max_unique_texts: null
+      selection_strategy: "most_frequent"
+      strict_response_validation_enabled: true
+      strict_cache_validation_enabled: true
+      cache_write_interval: 2500
+      partial_s2_write_percent_interval: 5
+      partial_s2_write_late_start_percent: 95
+      partial_s2_write_late_percent_interval: 1
+      partial_s2_write_min_seconds: 600
+    validation_qwen7b:
+      ollama_model: "qwen2.5:7b-instruct"
+      num_predict: 256
+      num_ctx: 2048
+      max_prompt_chars: 800
+      max_concurrent_requests: 4
+      max_unique_texts: null
+      selection_strategy: "most_frequent"
+    accuracy_qwen14b:
+      ollama_model: "qwen2.5:14b-instruct"
+      num_predict: 320
+      num_ctx: 2048
+      max_prompt_chars: 900
+      max_concurrent_requests: 4
+      max_unique_texts: null
+      selection_strategy: "most_frequent"
+
+  # LLM-facing medication text canonicalization reduces artificial uniqueness from
+  # ordering, duplicate tokens, spacing, noninformative placeholders, and common
+  # brand/generic aliases. The original cleaned visit medication_text remains in
+  # the analysis dataset, while llm_canonical_medication_text is used to deduplicate
+  # LLM requests. This is a no-training normalization layer, not a trained model.
+  llm_input_canonicalization_enabled: true
+  llm_input_sort_unique_tokens: true
+  llm_input_alias_normalization_enabled: true
+  llm_input_alias_resource_path: "resources/medication/medication_aliases.csv"
+
+  # v2.11: LLM drug-token dictionary identity is raw-keyed. Frozen encoder normalization
+  # must not alter the token used for LLM dictionary joins. Pretrained encoders remain
+  # available in the separate neural_text_representations step; optional LLM-input
+  # canonicalization can be re-enabled only for controlled validation experiments.
+  llm_input_pretrained_normalization_enabled: false
+  llm_input_pretrained_normalization_backend: "alias_only"   # sapbert_bioclinicalbert_ensemble | sapbert | bioclinicalbert | auto | alias_only
+  llm_input_pretrained_normalization_required: false
+  llm_input_sapbert_model: "cambridgeltl/SapBERT-from-PubMedBERT-fulltext"
+  llm_input_bioclinicalbert_model: "emilyalsentzer/Bio_ClinicalBERT"
+  llm_input_pretrained_vocabulary_path: "resources/medication/medication_reference_vocabulary.csv"
+  llm_input_pretrained_similarity_threshold: 0.86
+  llm_input_pretrained_batch_size: 64
+  llm_input_pretrained_device: "auto"
+  llm_input_pretrained_local_files_only: false
+
+  # v1.49 speed path: process the unique drug-name dictionary rather than every
+  # unique full medication-list combination. Each unique cleaned raw drug token is abstracted
+  # once by LLM, saved as a stable raw-keyed dictionary, kept in memory, and aggregated
+  # back to visit-level medication-state features. The join key is never positional.
+  abstraction_unit: "drug_token"       # drug_token | medication_text
+  drug_dictionary_filename: "s2e_unique_drug_name_llm_dictionary.csv"
+  drug_dictionary_persistent_cache_path: "op/llm_medication_drug_dictionary_cache.csv"
+  drug_dictionary_stable_key_enabled: true
+  drug_dictionary_cache_require_stable_key: true
+  drug_dictionary_join_key: "llm_dictionary_key"  # SHA-256 hash of normalized raw drug name; never positional index
+  drug_dictionary_identity_source: "raw_normalized_drug_name"
+  drug_dictionary_enforce_stable_key_mapping: true
+
+  # v1.48/v1.49 speed path: the LLM returns only clinically judgment-dependent fields.
+  # Formula-derived variables are computed in Python after parsing:
+  #   - polypharmacy_complexity_high
+  #   - medication_state_domain_count
+  #   - polypharmacy_complexity_score
+  # This reduces output tokens while preserving the clinical abstraction task.
+  llm_clinical_fields_only_output: true
+  formula_fields_computed_in_python: true
+
+  # Optional candidate-model agreement audit. Disabled by default because it requires
+  # candidate Ollama models to be installed and increases runtime. Enable only for
+  # validation/manuscript QC runs.
+  model_comparison_enabled: false
+  model_comparison_candidates:
+    - "qwen2.5:7b-instruct"
+  model_comparison_sample_size: 250
+  model_comparison_max_attempts: 1
+  model_comparison_num_predict: 256
+  model_comparison_request_timeout_s: 240.0
+
+  # Accuracy default for one-command execution: all valid canonical unique medication texts.
+  # Use LLM_MODEL_PROFILE=fast_qwen3b for a faster development run.
+  max_unique_texts: null
+  selection_strategy: "most_frequent"  # most_frequent | first | record_coverage
+  record_coverage_target: 0.80         # used only when selection_strategy=record_coverage
+
+  # Compact generation settings for speed and reproducibility.
+  # Keep comfortably above observed local Qwen2.5 3B generation times (~4.5-4.7s).
+  # A 5-second Python client timeout can falsely mark otherwise successful Ollama calls as timed out.
+  request_timeout_s: 180.0
+  connect_timeout_s: 10.0
+  reachability_timeout_s: 2.0
+  max_attempts: 2
+  temperature: 0.0
+  # Strict response validation rejects parseable but internally inconsistent LLM JSON
+  # before a row can receive effective_provider=ollama and llm_parse_ok=1.
+  strict_response_validation_enabled: true
+  strict_cache_validation_enabled: true
+  # Conservative certification gate for LLM rows. A row is certified only when it is
+  # true Ollama output, parses correctly, has no schema/quality repairs, has no error,
+  # meets the confidence threshold, and does not require manual review. This certifies
+  # structural/audit quality only, not external clinical ground-truth accuracy.
+  llm_certification_enabled: true
+  llm_certification_min_confidence: 0.50
+  llm_certification_require_no_manual_review: true
+  llm_certification_require_ollama_provider: true
+  num_predict: 256
+  num_ctx: 2048
+  max_prompt_chars: 800
+  keep_alive: "10m"
+  # Request backend controls how Python calls Ollama. auto uses curl when
+  # available because curl --max-time provides a hard wall-clock timeout that
+  # prevents the LLM progress bar from remaining indefinitely at 0% if the
+  # local Ollama server accepts but stalls a generation request.
+  request_backend: "auto"        # auto | curl | urllib
+  # Default to Ollama JSON mode for medication-state rows. The user-side log
+  # showed plain generation was reachable but returned responses that could not
+  # be parsed as JSON. JSON mode plus a larger generation budget is therefore
+  # the default. Options: none | json | schema | auto.
+  ollama_format_mode: "json"
+  structured_json_schema_enabled: false
+  # Warmup/preflight is disabled by default. Strict row-level validation still
+  # requires at least one successful Ollama JSON parse, so fallback-only runs stop.
+  # This prevents the console from appearing stuck before the LLM row progress bar starts.
+  warmup_enabled: false
+  # LLM-loop progress is shown as a console bar and summarized in logs/llm.log.
+  # Set LLM_PROGRESS_LOG_INTERVAL to change how often row-loop progress is written to llm.log.
+  progress_log_interval: 50
+  # Parallel row-level Ollama requests. Default 2 is the accuracy-neutral speed setting: same prompt/model, two independent requests.
+  # If the isolated Ollama server shows timeouts or memory pressure, set LLM_MAX_CONCURRENT_REQUESTS=1.
+  max_concurrent_requests: 4
+  # Abort early when the first row-level Ollama calls fail repeatedly. This avoids
+  # spending hours creating fallback-only rows when strict LLM output is required.
+  initial_failure_abort_count: 3
+  # If the launcher probe succeeds but the first row-level requests fail before
+  # any valid Ollama JSON parses, restart only the isolated 11435 Ollama server
+  # with CUDA hidden and retry on CPU. This preserves any separate server on 11434.
+  row_level_cpu_fallback_enabled: true
+  # Accuracy guardrails. With require_ollama_when_enabled=true, the pipeline stops
+  # instead of silently producing fallback-only outputs when Ollama is unavailable.
+  # require_min_ollama_successes=1 prevents a run from being described as LLM-enhanced
+  # when zero valid Ollama JSON responses were parsed.
+  require_ollama_when_enabled: true
+  require_min_ollama_successes: 1
+  fail_on_error: false
+
+  # Persistent cache for faster reruns. The cache is outside timestamped run folders.
+  persistent_cache_enabled: true
+  persistent_cache_path: "op/llm_medication_state_cache.csv"
+  # Write the persistent cache during the long LLM loop so interrupted runs resume from completed rows.
+  cache_write_interval: 250
+
+  # Partial Step 2 run-folder checkpoint outputs.
+  # These are separate from the final S2 outputs and are written atomically so that
+  # interrupted runs remain inspectable without corrupting final CSV files.
+  # Rule: write/update partial S2 audit, quality-audit, certification-audit,
+  # and progress JSON files every 1% until 95% completion, then every 0.5%
+  # from 95% to 100%, with a 120-second time-based checkpoint trigger.
+  # Set LLM_PARTIAL_S2_WRITE_ENABLED=false to disable.
+  partial_s2_write_enabled: true
+  partial_s2_write_percent_interval: 5
+  partial_s2_write_late_start_percent: 95
+  partial_s2_write_late_percent_interval: 1
+  partial_s2_write_min_seconds: 600
+
+  # Output names for the LLM medication-state operation.
+  cache_filename: "step2d_llm_medication_state_abstraction.csv"
+  feature_summary_filename: "step2e_llm_enhanced_medication_feature_summary.csv"
+  output_analysis_dataset_filename: "step2f_analysis_dataset_llm_enhanced_medication_state.csv"

@@ -1,0 +1,46 @@
+# Project: dementia_progression
+# File: configs/project.yaml
+#
+# Synopsis:
+#   Primary full-data production configuration that inherits split base and step YAML files.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.14
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+# Full production profile. Use environment variables or a separate local YAML for machine-specific overrides.
+
+_base:
+- ./_base.yaml
+project_name: dementia_progression
+input_csv: ./ip/data_nacc65/investigator_nacc65 w last visit.csv
+output_dir: ./op/dementia_progression
+runtime:
+  input_record_selection:
+    min_row_index: 0
+    max_row_index: all
+  resume:
+    enabled: false
+    output_dir: ''
+    use_latest_matching_output_dir: false
+    allow_overwrite_existing_outputs: true
+output_options:
+  append_datetime_to_output_dir: true
+  output_datetime_format: '%Y%m%d_%H%M%S'
+  output_datetime_separator: _
+  write_analysis_dataset: true
+  save_model_bundle: true
+  decimal_places: 6

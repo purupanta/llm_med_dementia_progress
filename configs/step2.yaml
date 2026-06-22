@@ -1,0 +1,244 @@
+# Project: dementia_progression
+# File: configs/step2.yaml
+#
+# Synopsis:
+#   Step 2 medication feature engineering, unique-drug dictionary abstraction, LLM settings,
+#   neural text representation settings, and analysis-safe preprocessing schema.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-26
+#
+# Version:
+#   2.14
+#
+# Notes:
+#   v2.5 treats NACC negative structural special codes (-4, -4.4, -5)
+#   as system-wide missing values in raw/source-like NACC columns while still
+#   requiring positive special codes such as 8, 9, 88, 95-99, and 999 to be
+#   handled only through dictionary/column-specific rules.
+
+_base:
+- ./_base_llm_medication_state.yaml
+- ./_base_neural_text_representations.yaml
+max_drug_columns: 40
+drug_prefix: DRUG
+missing_codes_global: []
+allow_global_missing_codes: false
+systemwide_structural_missing_codes:
+- -4
+- -4.4
+- -5
+positive_special_codes_column_specific_only:
+- 8
+- 9
+- 88
+- 95
+- 96
+- 97
+- 98
+- 99
+- 999
+official_nacc_missing_codes:
+  enabled: true
+  dictionary_dir: resources/nacc_official
+  autodownload:
+    enabled: true
+    overwrite_existing: false
+    fail_on_error: false
+    timeout_seconds: 30
+    files:
+    - name: uds_rdd_csv
+      filename: uds_rdd.csv
+      url: https://files.alz.washington.edu/documentation/uds4-rdd.csv
+      required: true
+    - name: np_rdd_csv
+      filename: np_rdd.csv
+      url: https://files.alz.washington.edu/documentation/rdd-np.csv
+      required: true
+    - name: genetics_rdd_csv
+      filename: genetics_rdd.csv
+      url: https://files.alz.washington.edu/documentation/rdd-gen.csv
+      required: false
+missing_codes_by_column:
+  NPPMIH:
+  - -4.4
+  NPFORMVER:
+  - -4
+  NPADNC:
+  - -4
+  NACCBRAA:
+  - -4
+  NACCNEUR:
+  - -4
+  NACCLEWY:
+  - -4
+  NPLBOD:
+  - -4
+  NPINF:
+  - -4
+  NPTAN:
+  - -4
+  NPLAC:
+  - -4
+  NPTHAL:
+  - -4
+  NPART:
+  - -4
+  NPOANG:
+  - -4
+  NPFTDTAU:
+  - -4
+  NACCMMSE:
+  - -4
+  NACCMOCA:
+  - -4
+  NACCGDS:
+  - -4
+  SMOKYRS:
+  - -4
+  PACKSPER:
+  - -4
+  QUITSMOK:
+  - -4
+  ALCOCCAS:
+  - -4
+  ALCFREQ:
+  - -4
+preserve_values_by_column:
+  VISITMO:
+  - 8
+  - 9
+  VISITDAY:
+  - 8
+  - 9
+  NACCAGE:
+  - 88
+  - 95
+  - 96
+  - 97
+  - 98
+  - 99
+  EDUC:
+  - 8
+  - 9
+  CDRSUM:
+  - 8
+  - 9
+  NACCGDS:
+  - 8
+  - 9
+  NACCMMSE:
+  - 8
+  - 9
+  NACCMOCA:
+  - 8
+  - 9
+  NPPMIH:
+  - 8
+  - 9
+  - 96
+  - 99
+temporal_handling:
+  recompute_elapsed_time_from_visit_date: true
+  exclude_raw_naccdays_from_step2_outputs: true
+categorical_columns:
+- SEX
+- HISPANIC
+- RACE
+- NACCAPOE
+binary_columns:
+- DEL
+- HALL
+- AGIT
+- DEPD
+- ANX
+- ELAT
+- APA
+- DISN
+- IRR
+- MOT
+- NITE
+- APP
+- PARK
+- GAITNPH
+- HYCEPH
+- BRNINJ
+- CVHATT
+- CBSTROKE
+- DIABETES
+- HYPERTEN
+- HYPERCHO
+- B12DEF
+- THYROID
+- ARTH
+- INCONTU
+- INCONTF
+- DEP2YRS
+- NPSYDEV
+- PSYCDIS
+- BIPOLDX
+- SCHIZOP
+- PTSDDX
+numeric_columns:
+- NACCAGE
+- NACCVNUM
+- VISITYR
+- prior_mci_visit_count
+- days_since_prior_mci_visit
+- days_since_first_mci_visit
+- EDUC
+- NACCMMSE
+- NACCMOCA
+- CDRSUM
+- CDRGLOB
+- NACCGDS
+- SMOKYRS
+- PACKSPER
+- QUITSMOK
+- ALCOCCAS
+- ALCFREQ
+feature_engineering:
+  add_visit_time_features: true
+  add_trajectory_features: true
+  trajectory_features:
+    enabled: true
+    numeric_columns:
+    - NACCMMSE
+    - NACCMOCA
+    - CDRSUM
+    - CDRGLOB
+    - NACCGDS
+    - NACCAGE
+    - EDUC
+    - medication_count
+    - medication_psychotropic_count
+    - medication_neuro_count
+    - medication_cardiometabolic_count
+    - llm_medication_state_domain_count
+    - llm_polypharmacy_complexity_score
+    binary_transition_columns:
+    - med_cat_antidepressant
+    - med_cat_antipsychotic
+    - med_cat_benzodiazepine
+    - med_cat_sleep
+    - med_cat_dementia
+    - med_cat_anticholinergic
+    - DEL
+    - HALL
+    - AGIT
+    - DEPD
+    - ANX
+    - PARK
+    - DIABETES
+    - HYPERTEN
+    - llm_psychotropic_exposure
+    - llm_sedative_hypnotic_exposure
+    - llm_cognitive_symptomatic_treatment
+    - llm_polypharmacy_complexity_high
+    - llm_anticholinergic_exposure

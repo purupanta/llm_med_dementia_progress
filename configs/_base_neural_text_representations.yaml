@@ -1,0 +1,42 @@
+# Project: dementia_progression
+# File: configs/_base_neural_text_representations.yaml
+#
+# Synopsis:
+#   Optional BioClinicalBERT and SapBERT medication-text representation settings.
+#   These representations are used as predictive patient-state features and are
+#   not interpreted as causal medication effects.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+
+neural_text_representations:
+  enabled: true
+  text_column: "medication_text"
+  device: "auto"                  # auto | cpu | cuda
+  batch_size: 16
+  max_length: 96
+  n_components: 32                # random-projected components per encoder
+  random_state: 42
+  cache_dir: "op/neural_text_representation_cache"
+  strict_model_loading: true      # fail clearly if torch/transformers/model is unavailable
+  local_files_only: false         # set true when models are already cached locally and internet should not be used
+  providers:
+    bioclinicalbert:
+      enabled: true
+      model_name_or_path: "emilyalsentzer/Bio_ClinicalBERT"
+      feature_prefix: "bioclinicalbert_medtxt_"
+      n_components: 32
+    sapbert:
+      enabled: true
+      model_name_or_path: "cambridgeltl/SapBERT-from-PubMedBERT-fulltext"
+      feature_prefix: "sapbert_medtxt_"
+      n_components: 32

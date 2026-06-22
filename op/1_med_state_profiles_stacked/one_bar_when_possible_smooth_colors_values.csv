@@ -1,0 +1,11 @@
+x_label,denom_count,lower_count,upper_count,lower_color,upper_color,lower_percent,upper_percent
+"Profile-level
+abstraction",20186,18154,2032,#D99441,#EBC18A,89.93361735856534,10.066382641434659
+"Medication
+availability",23665,22751,914,#5E9F6E,#A8CFAE,96.13775618001267,3.8622438199873232
+"Eligible-visit
+certification",23665,20644,3021,#C85A5A,#E2A0A0,87.23431227551237,12.76568772448764
+"Medication-present
+certification",22751,20644,2107,#A77AA6,#D2B3D1,90.73886862115951,9.26113137884049
+"Drug-token
+abstraction",1506,1506,0,#4C78A8,#A7C0DD,100.0,0.0

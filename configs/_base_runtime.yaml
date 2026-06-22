@@ -1,0 +1,42 @@
+# Project: dementia_progression
+# File: configs/_base_runtime.yaml
+#
+# Synopsis:
+#   Shared runtime, resume, seed, and progress-bar defaults.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.4
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+random_state: 42
+runtime:
+  input_record_selection:
+    min_row_index: 0
+    max_row_index: all
+  resume:
+    enabled: false
+    output_dir: ''
+    use_latest_matching_output_dir: false
+    allow_overwrite_existing_outputs: true
+progress:
+  enabled: true
+  show_step_messages: true
+
+
+manuscript_readiness_gate:
+  enabled: true
+  fail_pipeline_on_error: true
+  write_report: true

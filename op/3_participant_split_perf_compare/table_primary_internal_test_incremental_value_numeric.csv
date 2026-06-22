@@ -1,0 +1,3 @@
+Model family,Model comparison,Δ AUROC,Δ Average precision,Δ Brier score,Δ Balanced accuracy
+Logistic regression,Logistic regression: Clinical only vs. Clinical + LLM-enhanced medication-state information,0.02200000000000002,0.033999999999999975,-0.007000000000000006,0.026999999999999913
+Histogram gradient boosting,Histogram gradient boosting: Clinical only vs. Clinical + LLM-enhanced medication-state information,0.015000000000000013,0.027000000000000024,-0.006000000000000005,0.015000000000000013

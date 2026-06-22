@@ -1,0 +1,127 @@
+# Project: dementia_progression
+# File: configs/step1.yaml
+#
+# Synopsis:
+#   Step 1 source loading, row filtering, cohort-defining columns, and source-column inventory settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.3
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+# Step 1 writes s1* files and constructs the MCI next-visit analytic cohort.
+# Neuropathology columns are listed here so Step 1 can retain them for Step 6 anchoring;
+# they are excluded from predictive model features downstream to prevent leakage.
+
+id_col: NACCID
+visit_number_col: NACCVNUM
+visit_year_col: VISITYR
+visit_month_col: VISITMO
+visit_day_col: VISITDAY
+last_visit_col: Last visit
+current_diagnosis_col: NACCUDSD
+mci_code: 3
+dementia_code: 4
+selected_base_columns:
+- SEX
+- HISPANIC
+- RACE
+- NACCAGE
+- NACCDAYS
+- EDUC
+- NACCAPOE
+- NACCMMSE
+- NACCMOCA
+- CDRSUM
+- CDRGLOB
+- NACCGDS
+- DEL
+- HALL
+- AGIT
+- DEPD
+- ANX
+- ELAT
+- APA
+- DISN
+- IRR
+- MOT
+- NITE
+- APP
+- PARK
+- GAITNPH
+- HYCEPH
+- BRNINJ
+- SMOKYRS
+- PACKSPER
+- QUITSMOK
+- ALCOCCAS
+- ALCFREQ
+- CVHATT
+- CBSTROKE
+- DIABETES
+- HYPERTEN
+- HYPERCHO
+- B12DEF
+- THYROID
+- ARTH
+- INCONTU
+- INCONTF
+- DEP2YRS
+- NPSYDEV
+- PSYCDIS
+- BIPOLDX
+- SCHIZOP
+- PTSDDX
+neuropathology_columns:
+- NPFORMVER
+- NPADNC
+- NACCBRAA
+- NACCNEUR
+- NACCLEWY
+- NPLBOD
+- NPINF
+- NPPMIH
+- NPTAN
+- NPLAC
+- NPTHAL
+- NPART
+- NPOANG
+- NPFTDTAU
+step1:
+  official_nacc_dictionary_dir: resources/nacc_official
+  require_official_column_descriptions: false
+  official_nacc_dictionary_autodownload:
+    enabled: true
+    overwrite_existing: false
+    fail_on_error: false
+    timeout_seconds: 30
+    files:
+    - name: uds_rdd_csv
+      filename: uds_rdd.csv
+      url: https://files.alz.washington.edu/documentation/uds4-rdd.csv
+      required: true
+    - name: np_rdd_csv
+      filename: np_rdd.csv
+      url: https://files.alz.washington.edu/documentation/rdd-np.csv
+      required: true
+    - name: genetics_rdd_csv
+      filename: genetics_rdd.csv
+      url: https://files.alz.washington.edu/documentation/rdd-gen.csv
+      required: false
+  required_columns_for_row_filter:
+  - NACCID
+  - NACCVNUM
+  - VISITYR
+  - NACCUDSD

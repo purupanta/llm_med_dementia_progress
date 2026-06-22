@@ -1,0 +1,65 @@
+# Project: dementia_progression
+# File: configs/step3.yaml
+#
+# Synopsis:
+#   Step 3 participant-level train/validation/test splitting, model fitting, and hyperparameter settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.14
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+split:
+  train_size: 0.7
+  validation_size: 0.1
+  test_size: 0.2
+test_size: 0.2
+modeling:
+  # Runtime filters allow fast diagnostic runs without changing the production model list.
+  # Leave empty in production to fit all configured model arms.
+  enabled_model_families: []
+  enabled_model_arms: []
+  threshold: 0.5
+  primary_interpretable_model: longitudinal_llm_medication_trajectory_logistic
+  final_predictive_model_preference: auto_best_validation_auc
+  logistic:
+    C: 0.5
+    max_iter: 5000
+    class_weight: balanced
+    solver: lbfgs
+  hist_gradient_boosting:
+    enabled: true
+    max_iter: 500
+    learning_rate: 0.03
+    max_leaf_nodes: 15
+    l2_regularization: 0.05
+    min_samples_leaf: 40
+    early_stopping: true
+    validation_fraction: 0.15
+    n_iter_no_change: 25
+    use_balanced_sample_weight: true
+  hyperparameter_tuning:
+    enabled: true
+    refit_train_validation_for_final_test: true
+    logistic_C_grid:
+    - 0.25
+    - 0.5
+    - 1.0
+    hist_gradient_boosting_grid:
+    - max_iter: 500
+      learning_rate: 0.03
+      max_leaf_nodes: 15
+      l2_regularization: 0.05
+      min_samples_leaf: 40

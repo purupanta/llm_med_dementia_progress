@@ -1,0 +1,1 @@
+Figure 1. Participant-level train, validation, and held-out test split. Bars show visit records, unique participants, and next-visit dementia progression events. Bracketed values indicate the percentage of each quantity represented by the corresponding split.

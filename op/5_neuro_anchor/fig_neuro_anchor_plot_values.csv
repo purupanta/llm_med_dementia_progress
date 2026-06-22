@@ -1,0 +1,8 @@
+Outcome,Clinical-only risk,Medication-state risk
+High ADNC,0.584782,0.614597
+High Braak,0.571479,0.5981
+"Moderate/frequent
+neuritic plaques",0.545309,0.568135
+"Lewy body
+pathology",0.535946,0.544882
+Infarct,0.493062,0.491812

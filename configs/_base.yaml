@@ -1,0 +1,37 @@
+# Project: dementia_progression
+# File: configs/_base.yaml
+#
+# Synopsis:
+#   Composition entry point that inherits shared base settings and Step 1 through Step 7 YAML settings.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.4
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+# This file should stay small. Put step-specific settings in step1.yaml ... step7.yaml.
+# Project-specific overrides belong in project.yaml or a profile YAML.
+
+_base:
+- ./_base_paths.yaml
+- ./_base_runtime.yaml
+- ./step1.yaml
+- ./step2.yaml
+- ./step3.yaml
+- ./step4.yaml
+- ./step5.yaml
+- ./step6.yaml
+- ./step7.yaml
+project_name: dementia_progression

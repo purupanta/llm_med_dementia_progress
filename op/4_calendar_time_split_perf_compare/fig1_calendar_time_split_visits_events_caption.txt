@@ -1,0 +1,1 @@
+Figure 1. Calendar-time split for temporal validation. The figure shows visit and event counts in the temporal training period and temporal test period.

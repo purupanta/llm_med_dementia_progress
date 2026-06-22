@@ -1,0 +1,1 @@
+Figure 3. Temporal test-set performance by AUROC and balanced accuracy using the calendar-time split. The figure compares clinical-only and clinical + LLM-enhanced medication-state models within logistic regression and HGB. Higher values indicate better performance for both AUROC and balanced accuracy. HGB denotes histogram gradient boosting.

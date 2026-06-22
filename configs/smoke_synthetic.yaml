@@ -1,0 +1,87 @@
+# Project: dementia_progression
+# File: configs/smoke_synthetic.yaml
+#
+# Synopsis:
+#   Synthetic smoke-test configuration for end-to-end validation without the real NACC input file.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.14
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+# Synthetic smoke tests disable external pretrained model loading and use mock/local LLM behavior.
+
+_base:
+- ./_base.yaml
+project_name: dementia_progression_smoke_synthetic
+input_csv: ./ip/synthetic/synthetic_nacc.csv
+output_dir: ./op/smoke_synthetic_v2_14_train_validation_test
+neuropathology_columns: []
+modeling:
+  enabled_model_families:
+    - logistic
+  hist_gradient_boosting:
+    max_iter: 100
+    learning_rate: 0.04
+  hyperparameter_tuning:
+    enabled: true
+    logistic_C_grid:
+    - 0.5
+    hist_gradient_boosting_grid:
+    - max_iter: 100
+      learning_rate: 0.04
+      max_leaf_nodes: 15
+      l2_regularization: 0.05
+      min_samples_leaf: 20
+validation:
+  n_bootstrap: 20
+  grouped_permutation_importance:
+    enabled: false
+  calibration_bins: 5
+  permutation_importance:
+    enabled: false
+output_options:
+  append_datetime_to_output_dir: false
+neural_text_representations:
+  enabled: false
+llm_medication_state:
+  model_profile: custom
+  llm_input_pretrained_normalization_enabled: false
+  llm_input_pretrained_normalization_required: false
+  # v2.11: smoke config is self-contained and does not require a live Ollama server.
+  provider: mock
+  fallback_provider: local_clinical_abstraction
+  require_ollama_when_enabled: false
+  require_min_ollama_successes: 0
+  llm_certification_require_ollama_provider: false
+  persistent_cache_enabled: false
+  model_comparison_enabled: false
+
+
+# v2.11 smoke runs remain fully offline/self-contained; official NACC dictionary
+# auto-download is tested separately and disabled here to avoid network dependence.
+step1:
+  official_nacc_dictionary_autodownload:
+    enabled: false
+
+official_nacc_missing_codes:
+  autodownload:
+    enabled: false
+
+
+# Offline smoke uses mock medication abstraction, so the production manuscript-readiness gate is intentionally disabled.
+manuscript_readiness_gate:
+  enabled: false
+  fail_pipeline_on_error: false

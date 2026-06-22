@@ -1,0 +1,25 @@
+# Project: dementia_progression
+# File: configs/_base_paths.yaml
+#
+# Synopsis:
+#   Shared input and output path defaults.
+#
+# Author:
+#   puru panta (purupanta@uky.edu)
+#
+# Date Created:
+#   2026-05-22
+#
+# Last Updated:
+#   2026-05-25
+#
+# Version:
+#   2.4
+#
+# Notes:
+#   Configuration is intentionally split by numbered analytic step so the
+#   GitHub project can be reviewed, tested, and maintained one stage at a time.
+#   Shared paths/runtime settings remain in _base*.yaml files.
+
+input_csv: ./ip/data_nacc65/investigator_nacc65 w last visit.csv
+output_dir: ./op/dementia_progression

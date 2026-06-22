@@ -1,0 +1,5 @@
+Model,AUROC,Average precision,Brier score,Balanced accuracy
+Clinical-only logistic regression,0.785,0.397,0.176,0.706
+Clinical + LLM-enhanced medication-state logistic regression,0.792,0.417,0.178,0.72
+Clinical-only histogram gradient boosting,0.806,0.459,0.165,0.725
+Clinical + LLM-enhanced medication-state histogram gradient boosting,0.813,0.469,0.159,0.737

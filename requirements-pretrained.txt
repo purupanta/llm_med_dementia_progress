@@ -1,0 +1,4 @@
+# Required for SapBERT and BioClinicalBERT frozen encoder medication normalization
+# and neural medication-text representation arms.
+torch>=2.0
+transformers>=4.40

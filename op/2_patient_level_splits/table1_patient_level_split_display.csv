@@ -1,0 +1,5 @@
+Split,Visits,% of visits,Participants,Unique Participants,% of participants,Events,% of events,Non-events,Event prevalence
+Training,"16,593",70.1%,"7,469","7,469",70.0%,"3,100",70.6%,"13,493",18.7%
+Validation,"2,348",9.9%,"1,067","1,067",10.0%,418,9.5%,"1,930",17.8%
+Held-out test,"4,724",20.0%,"2,135","2,135",20.0%,872,19.9%,"3,852",18.5%
+Total,"23,665",100%,"10,671","10,671",100%,"4,390",100%,"19,275",18.6%
